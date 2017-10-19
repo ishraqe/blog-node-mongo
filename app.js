@@ -14,6 +14,11 @@ app.post('/user/sign-up',(req, res)=>{
     var email = req.email;
 });
 
+
+app.post('/user/login',(req, res)=>{
+    var email = req.email;
+});
+
 app.listen(port,()=>{
    console.log('started on this port 3000');
 });
