@@ -24,22 +24,34 @@ const blogSchema=mongoose.Schema({
     }
 });
 
-blogSchema.statics.findBlogById= function (id) {
+blogSchema.statics.isOwner= function (blog_id,user_id) {
    //convert this method to is owner of the blog or not
-
     var Blog = this;
     return Blog.findOne({
-        '_id': id
+        '_id': blog_id,
+        'user_id': user_id
     });
-}
+};
 
-blogSchema.statics.updateBlog=function (blog) {
+blogSchema.statics.getBlogById= function (blog_id) {
     var Blog = this;
-    blog.update({blog}).then(()=>{
+    return Blog.findOne({
+        '_id': blog_id
+    });
+};
 
-    })
-}
-
+blogSchema.statics.getBlogByUserId= function (user_id) {
+    var Blog = this;
+    return Blog.find({
+        'user_id': user_id
+    });
+};
+blogSchema.statics.getBlogByCategoryId= function (categories) {
+    var Blog = this;
+    return Blog.find({
+        'categories': categories
+    });
+};
 
 var Blog= mongoose.model('Blog', blogSchema);
 module.exports ={Blog}
