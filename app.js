@@ -1,4 +1,5 @@
 var express = require('express');
+var cors = require('cors');
 var bodyParser = require('body-parser');
 var {ObjectID} = require('mongodb');
 var _ =require('lodash');
@@ -14,9 +15,9 @@ var app = express();
 const port= 3000;
 
 app.use(bodyParser.json());
-
+app.use(cors());
 //user auth routes
-app.post('/user/sign-up',(req, res)=>{
+app.post('/users/sign-up',(req, res)=>{
     var info=_.pick(req.body,['email','username','first_name','last_name','password']);
 
     var user=new User(info);
@@ -30,8 +31,8 @@ app.post('/user/sign-up',(req, res)=>{
     })
 });
 app.post('/users/login', (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
 
+    var body = _.pick(req.body, ['email', 'password']);
     User.findByCredentials(body.email, body.password).then((user) => {
         // return user.generateAuthToken().then((token) => {
         //     res.header('x-auth', token).send(user);
@@ -42,7 +43,7 @@ app.post('/users/login', (req, res) => {
         });
 
     }).catch((e) => {
-        res.status(400).send();
+        res.status(400).send('not matched');
     });
 });
 app.get('/users/me', authenticate, (req, res) => {
@@ -50,7 +51,7 @@ app.get('/users/me', authenticate, (req, res) => {
 });
 app.delete('/users/logout', authenticate, (req, res) => {
     req.user.removeToken(req.token).then(() => {
-        res.status(200).send(req.user);
+        res.status(200).send('logged out');
     }, () => {
         res.status(400).send();
     });

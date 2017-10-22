@@ -16,6 +16,22 @@ var UserSchema = new mongoose.Schema({
             message: '{VALUE} is not a valid email'
         }
     },
+    username:{
+        type: String,
+        required: true,
+        minlength: 1,
+        unique: true,
+    },
+    first_name:{
+        type: String,
+        required: true,
+        minlength: 1,
+    },
+    last_name:{
+        type: String,
+        required: true,
+        minlength: 1,
+    },
     password: {
         type: String,
         require: true,
@@ -36,17 +52,14 @@ var UserSchema = new mongoose.Schema({
 UserSchema.methods.toJSON = function () {
     var user = this;
     var userObject = user.toObject();
-
-    return _.pick(userObject, ['_id', 'email']);
+    return _.pick(userObject, ['_id', 'email','username','first_name','last_name','tokens']);
 };
 
 UserSchema.methods.generateAuthToken = function () {
     var user = this;
     var access = 'auth';
     var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
-
     user.tokens.push({access, token});
-
     return user.save().then(() => {
         return token;
     });
@@ -54,7 +67,6 @@ UserSchema.methods.generateAuthToken = function () {
 
 UserSchema.methods.removeToken = function (token) {
     var user = this;
-
     return user.update({
         $pull: {
             tokens: {token}
