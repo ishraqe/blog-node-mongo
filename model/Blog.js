@@ -40,10 +40,10 @@ blogSchema.statics.getBlogById= function (blog_id) {
     });
 };
 
-blogSchema.statics.getBlogByUserId= function (user_id) {
+blogSchema.statics.getBlogByUserId = function (user_id) {
     var Blog = this;
     return Blog.find({
-        'user_id': user_id
+        'user_id': user_id.toString()
     });
 };
 blogSchema.statics.getBlogByCategoryId= function (categories) {

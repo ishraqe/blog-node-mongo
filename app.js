@@ -38,7 +38,6 @@ app.post('/users/login', (req, res) => {
         //     res.header('x-auth', token).send(user);
         // });
        return user.generateAuthToken().then((token)=>{
-            console.log(token);
             res.header('x-auth',token).send(user);
         });
 
@@ -75,7 +74,7 @@ app.get('/blogs/:id',(req,res)=>{
     });
 });
 app.get('/blogs/user/:id',(req,res)=>{
-    var user_id = req.params.id
+    var user_id = req.params.id;
     if (!ObjectID.isValid(user_id)) {
         return res.status(404).send();
     }
@@ -83,9 +82,8 @@ app.get('/blogs/user/:id',(req,res)=>{
         if(!blog) {
             res.status(404).send('blog not found');
         }else{
-            res.send(blog);
+            res.send(JSON.stringify(blog, undefined, 2));
         }
-
     }).catch((e)=>{
         res.send('something went wrong');
     });
