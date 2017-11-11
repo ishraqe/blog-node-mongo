@@ -4,18 +4,21 @@ var bodyParser = require('body-parser');
 var {ObjectID} = require('mongodb');
 var _ =require('lodash');
 var jwt = require('jsonwebtoken');
+var multer = require('multer');
 var {mongoose} = require('./db/mongoose');
 var {User} = require('./model/User');
 var {Blog} = require('./model/Blog');
 var {Category} = require('./model/Categories');
 var {authenticate} = require('./middleware/authenticate');
-
+var upload = multer({ dest: 'uploads/' });
 
 var app = express();
 const port= 3000;
 
 app.use(bodyParser.json());
 app.use(cors());
+
+
 //user auth routes
 app.post('/users/sign-up',(req, res)=>{
     var info=_.pick(req.body,['email','username','first_name','last_name','password']);
@@ -103,14 +106,15 @@ app.get('/blogs/category/:id',(req,res)=>{
         res.send('something went wrong');
     });
 });
-app.post('/users/blog/create',authenticate,(req, res)=>{
-    var info =_.pick(req.body,['title','blog_header_image','bog_description','categories','user_id']);
-    var blog= new Blog(info);
-    blog.save().then((blog)=>{
-        res.send(blog);
-    }).catch((e)=>{
-        res.status(404).send('something wrong');
-    });
+app.post('/users/blog/create',(req, res)=>{
+    res.send(req);
+    // var info =_.pick(req.body,['title','blog_header_image','bog_description','categories','user_id']);
+    // var blog= new Blog(info);
+    // blog.save().then((blog)=>{
+    //     res.send(blog);
+    // }).catch((e)=>{
+    //     res.status(404).send('something wrong');
+    // });
 });
 app.patch('/users/blog/:id/edit',authenticate, (req, res) => {
     var id = req.params.id;
